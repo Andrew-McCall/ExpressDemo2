@@ -1,0 +1,22 @@
+{
+  "name": "expressdemo2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start":"node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Andrew-McCall/ExpressDemo2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Andrew-McCall/ExpressDemo2/issues"
+  },
+  "homepage": "https://github.com/Andrew-McCall/ExpressDemo2#readme",
+  "dependencies": {
+    "colour": "^0.7.1"
+  }
+}
