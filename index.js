@@ -1,7 +1,40 @@
-require('colour');
+const express = require("express")
 
-console.log('hello'.green); // outputs green text
-console.log('i like cake and pies'.underline.red) // outputs red underlined text
-console.log('inverse the color'.inverse); // inverses the color
-console.log('OMG Rainbows!'.rainbow); // rainbow (ignores spaces)
+const app = express();
 
+app.use(express.json())
+
+
+// Request, Response
+app.get("/read", (req, res) => { 
+    res.status(200).send("read")
+})
+
+app.get("/read/:id", (req, res) => { 
+    res.status(200).send(req.params.id)
+})
+
+app.put("/create", (req, res) => { 
+
+    // Create in DB
+    console.log(req.body)
+
+    res.status(201).json(req.body)
+})
+
+app.post("/replace", (req, res) => { 
+    res.status(200).send("replace")
+})
+
+// Partial
+app.patch("/update", (req, res) => {
+    res.status(200).send("update")
+})
+
+app.delete("/delete", (req, res) => { 
+    res.status(200).send("delete")
+})
+
+const server = app.listen(3001, ()=>{
+    console.log(server.address())
+})
