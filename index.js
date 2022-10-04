@@ -3,58 +3,81 @@ const express = require("express")
 
 const app = express()
 
-const names = ["Andrew", "David"]
+var trainers = [{id:0, firstName:"andrew", surname:"McCall", "age":25, hobbies:["Gaming", "Reading","Coding"]}]
+var id = 0;
 
 /// Middleware
 app.use(express.json())
+app.use((req, res, next) => {
+    console.log(req.path)
+    console.log(req.ip)
+    console.log(new Date())
+    next()
+})
 
 /// Routes
-app.get("/", (req, res) => {
-    res.status(200).send("Hello, my name is!")
-})
-
 app.get("/getAll", (req, res) => {
-    res.status(200).json(names)
+    res.status(200).json(trainers)
 })
 
-app.get("/getOne/:id", (req, res) => {
+app.get("/getOne/:id", (req, res, next) => {
+
+    for (const t of trainers) {
+        if (t.id == req.params.id){
+            res.status(200).json(t)
+            return;
+        }
+    }
+    
+    next(new Error("Index invaild"))
+})
+
+app.delete("/deleteOne/:id", (req, res, next) => {
     try{
-        res.status(200).json(names[req.params.id])
+        trainers = trainers.filter(t => (t.id != req.params.id))
+        res.status(200).json(trainers)
     }catch (err){
-        res.status(500).send("Index invaild")
+        next(new Error("Index invaild"))
     }
 })
 
-app.delete("/deleteOne/:id", (req, res) => {
-    try{
-        const deleted = names[req.params.id]
-        
-        // delete names[req.params.id]
-        names.splice(req.params.id, 1)
-
-        res.status(200).json(deleted)
-    }catch (err){
-        res.status(500).send("Index invaild")
-    }
-})
-
-app.put("/create", (req, res) => {
-    if (req.body.name){
-        names.push(req.body.name)
-        res.status(201).send(`${req.body.name}, ${names.length}`)
+app.put("/create", (req, res, next) => {
+    if (req.body.firstName && req.body.surname){
+        req.body.id = ++id;
+        trainers.push(req.body)
+        res.status(201).json(req.body)
     }else{
-        res.status(500).send('Expected {"name":"{name}"}')
+        next(new Error('Expected {"firstName":"{name}", "surname":"{name}"}'))
     }
 })
 
-app.post("/update/:id", (req, res) => {
-    if (req.params.id && req.query.name){
-        const replaced = names[req.params.id]
-        names[req.params.id] = req.query.name
-        res.status(201).send(`${names[req.params.id]} replaced ${replaced}, ${req.params.id}`)
+app.post("/update/:id", (req, res,next) => {
+
+    const index = trainers.indexOf(trainers.find(t => t.id == req.params.id))
+
+    if(index === -1){
+        next(new Error('Invaild Index'))
     }else{
-        res.status(500).send('/update/{id}?name={name}')
+        trainers[index] = {...trainers[index], ...req.body}
+
+        res.status(200).json(trainers[index])
     }
+    
+})
+
+app.get("/error", (req, res, next) => {
+    next(new Error("Custom Error"))
+})
+
+/// Error Handling
+app.use((err, req, res, next) => {
+    console.log(err)
+    next(err)
+})
+
+app.use((err, req, res, next) => {
+    res.status(500).send(err.stack)
+    next(err)
 })
 
 /// Start
