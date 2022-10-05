@@ -16,11 +16,23 @@ router.get("/getAll", (req, res, next) => {
     }).catch(next)
 })
 
+router.get("/getOne/:id", (req, res, next) => {
+    trainerModel.findOneById({"_id":req.params.id}).then(trainer => {
+        res.status(200).json(trainer)
+    }).catch(next)
+})
+
+router.get("/getQuery", (req, res, next) => {
+    trainerModel.find(req.body).then(trainers => {
+        res.status(200).json(trainers)
+    }).catch(next)
+})
+
 router.put("/create", (req, res, next) => {
     trainerModel.create(req.body).then(trainer => {
         res.status(201).json(trainer)
     }).catch(next)
-    
+
     // new trainerModel(req.body).save().then((trainer) => {
     //     res.status(201).json(trainer)
     // }).catch(next)
@@ -42,6 +54,14 @@ router.post("/update/:id", (req, res, next) => {
     //     })
         
     // }).catch(next)
+})
+
+router.delete("/deleteOne/:id", (req, res, next) => {
+
+    trainerModel.deleteOne({"_id":req.params.id}).then(r => {
+        res.status(200).json(r)
+    }).catch(next)
+
 })
 
 module.exports = router;
