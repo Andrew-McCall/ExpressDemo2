@@ -1,11 +1,19 @@
 const router = require("express").Router();
 const {Schema, model} = require("mongoose");
 
+const courseSchema = new Schema({
+    name:String,
+    id:String,
+    slots_avia:Number,
+    slots_filled:Number
+})
+
 const trainerSchema = new Schema({
     firstName:{type:String, required:true},
     surname:{type:String, required:true},
     age:{type:Number, required:true},
-    hobbies:[String]
+    hobbies:[String],
+    courses: [courseSchema]
 })
 
 const trainerModel = model("trainers", trainerSchema);
@@ -17,7 +25,7 @@ router.get("/getAll", (req, res, next) => {
 })
 
 router.get("/getOne/:id", (req, res, next) => {
-    trainerModel.findOneById({"_id":req.params.id}).then(trainer => {
+    trainerModel.findById({"_id":req.params.id}).then(trainer => {
         res.status(200).json(trainer)
     }).catch(next)
 })
@@ -25,6 +33,16 @@ router.get("/getOne/:id", (req, res, next) => {
 router.get("/getQuery", (req, res, next) => {
     trainerModel.find(req.body).then(trainers => {
         res.status(200).json(trainers)
+    }).catch(next)
+})
+
+router.get("/getByName/:firstName/:surname", (req, res, next) => {
+    trainerModel.findOne({"firstName": req.params.firstName, "surname": req.params.surname}).then(trainer => {
+        if (trainer){
+            res.status(200).json(trainer)
+        }else{
+            res.status(400).json(new Error("Invaild Id").stack)
+        }
     }).catch(next)
 })
 
@@ -58,7 +76,7 @@ router.post("/update/:id", (req, res, next) => {
 
 router.delete("/deleteOne/:id", (req, res, next) => {
 
-    trainerModel.deleteOne({"_id":req.params.id}).then(r => {
+    trainerModel.deleteOne({"_id":req.params.id}).then( (r) => {
         res.status(200).json(r)
     }).catch(next)
 
