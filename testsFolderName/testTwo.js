@@ -38,7 +38,7 @@ describe.only("mongoose", function(){
 
     this.beforeEach("Test Data", async function(){
         // await mongoose.connection.db.dropCollection('trainers');
-        await trainerModel.deleteMany();
+        await trainerModel.deleteMany({});
         await trainerModel.create(testData)
     })
 
@@ -71,9 +71,6 @@ describe.only("mongoose", function(){
 
             chai.expect(res.status).to.equal(201)
             chai.expect(res.body).to.be.not.equal({});
-
-            console.log(res.body)
-            console.log(trainer)
 
             /// Lazy Way
             trainer._id = res.body._id;
