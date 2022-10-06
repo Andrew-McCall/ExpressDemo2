@@ -96,4 +96,4 @@ router.delete("/deleteOne/:id", (req, res, next) => {
 
 })
 
-module.exports = router;
+module.exports = {trainerModel, router};

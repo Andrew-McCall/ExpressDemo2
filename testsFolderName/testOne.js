@@ -1,13 +1,12 @@
 const chai = require("chai");
 
 const test = "Hello World!";
-before("Before EVERYTHING", function(){
-    console.log("Before")
-})
-
-after("After EVERYTHING", function(){
-    console.log("After")
-})
+// before("Before EVERYTHING", function(){
+//     console.log("Before")
+// })
+// after("After EVERYTHING", function(){
+//     console.log("After")
+// })
 
 describe("Chai Demo", function(){
 
