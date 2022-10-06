@@ -2,10 +2,8 @@ const router = require("express").Router();
 const {Schema, model} = require("mongoose");
 
 const courseSchema = new Schema({
-    name:String,
-    id:String,
-    slots_avia:Number,
-    slots_filled:Number
+    name:{type:String, required:true},
+    courseid:String,
 })
 
 const trainerSchema = new Schema({
@@ -25,8 +23,24 @@ router.get("/getAll", (req, res, next) => {
 })
 
 router.get("/getOne/:id", (req, res, next) => {
-    trainerModel.findById({"_id":req.params.id}).then(trainer => {
+    trainerModel.findById(req.params.id).then(trainer => {
         res.status(200).json(trainer)
+    }).catch(next)
+})
+
+router.get("/getCourseById/:id", (req, res, next) => {
+    trainerModel.find({"courses.courseid": req.params.id }).then(trainer => {
+        res.status(200).json(trainer)
+    }).catch(next)
+})
+
+router.get("/getTrainerByCourseName/:name", (req, res, next) => {
+    trainerModel.find({"courses.name":req.params.name}).then(trainers => {
+        if (trainers.length > 0){
+            res.status(200).json(trainers)
+        }else{
+            res.status(400).send(`No Courses named "${req.params.name}"`)
+        }
     }).catch(next)
 })
 
@@ -57,8 +71,8 @@ router.put("/create", (req, res, next) => {
 })
 
 router.post("/update/:id", (req, res, next) => {
-    trainerModel.findByIdAndUpdate({"_id":req.params.id}, req.body).then((Old) =>{
-        trainerModel.findById({"_id":req.params.id}).then((New) => {
+    trainerModel.findByIdAndUpdate(req.params.id, req.body).then((Old) =>{
+        trainerModel.findById(req.params.id).then((New) => {
             res.status(200).json({Old, New})
         })
      }).catch(next) 
