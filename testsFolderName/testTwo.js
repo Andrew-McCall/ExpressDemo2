@@ -1,9 +1,9 @@
 const mongoose = require("mongoose")
 const chai = require("chai");
 chai.use(require("chai-http"))
-const {trainerModel} = require("./../routes/mongoose.js")
+const {trainerModel} = require("../routes/mongoose.js")
 
-const {server} = require("./../index.js");
+const {server} = require("../index.js");
 
 after("Close Server", function(){
     server.close();
